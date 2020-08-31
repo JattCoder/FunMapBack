@@ -1,0 +1,3 @@
+class Fpin < ApplicationRecord
+
+end
