@@ -27,6 +27,28 @@ class MapsController < ApplicationController
         render json: results
     end
 
+    def spotInfo
+        #json_result_object
+        #reviews
+        #types
+        hours = []
+        openNow = false
+        search = GooglePlaces::Client.new('AIzaSyDMCLs_nBIfA8Bw9l50nSRwLOUByiDel9U')
+        spot = search.spot('ChIJuUGLS4mAhYAR1g0mGcIy8fk')
+        if spot['json_result_object']['opening_hours']
+            hours = spot['json_result_object']['opening_hours']['weekday_text']
+            openNow = spot['json_result_object']['opening_hours']['open_now']
+        end
+        render json: {
+            'formatted_address' => spot['json_result_object']['formatted_address'],
+            'formatted_phone_number' => spot['json_result_object']['international_phone_number'],
+            'opening_hours' => hours,
+            'open_now' => openNow,
+            'reviews' => spot['json_result_object']['reviews'],
+            'types' => spot['json_result_object']['types']
+        }
+    end
+
     def buildRoute
         language = 'en'
         language = params[:language] if params[:language]

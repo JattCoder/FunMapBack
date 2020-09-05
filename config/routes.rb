@@ -22,6 +22,7 @@ Rails.application.routes.draw do
 
   #MAP
   get '/account/search', to: 'maps#searchPlaces'
+  get '/account/spot', to: 'maps#spotInfo'
   get '/account/:id/from/:origin/to/:destination', to: 'maps#buildRoute'
   post '/account/:id/from/:origin/to/:destination/start', to: 'maps#startRoute' #save route and boolean to check wheather route was completed or no
   
