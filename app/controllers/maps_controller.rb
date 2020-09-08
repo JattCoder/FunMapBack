@@ -28,9 +28,6 @@ class MapsController < ApplicationController
     end
 
     def spotInfo
-        #json_result_object
-        #reviews
-        #types
         hours = []
         openNow = false
         search = GooglePlaces::Client.new('AIzaSyDMCLs_nBIfA8Bw9l50nSRwLOUByiDel9U')
