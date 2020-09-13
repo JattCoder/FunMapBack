@@ -8,12 +8,14 @@ class MapsController < ApplicationController
     def searchPlaces
         results = []
         status = ''
+        id = 0
         search = GooglePlaces::Client.new('AIzaSyDMCLs_nBIfA8Bw9l50nSRwLOUByiDel9U')
         search.spots_by_query(params[:input]).each do |place|
             if place.json_result_object['opening_hours']
                 status = place.json_result_object['opening_hours']['open_now']
             end
             results << {
+                'id' => id.to_s,
                 'name' => place.json_result_object['name'],
                 'address' => place.json_result_object['formatted_address'],
                 'status' => status,
@@ -23,6 +25,7 @@ class MapsController < ApplicationController
                 'types' => place.json_result_object['types'],
                 'icon' => place.json_result_object['icon']
             }
+            id += 1
         end
         render json: results
     end
@@ -31,7 +34,7 @@ class MapsController < ApplicationController
         hours = []
         openNow = false
         search = GooglePlaces::Client.new('AIzaSyDMCLs_nBIfA8Bw9l50nSRwLOUByiDel9U')
-        spot = search.spot('ChIJuUGLS4mAhYAR1g0mGcIy8fk')
+        spot = search.spot(params[:placeid])
         if spot['json_result_object']['opening_hours']
             hours = spot['json_result_object']['opening_hours']['weekday_text']
             openNow = spot['json_result_object']['opening_hours']['open_now']
