@@ -7,7 +7,7 @@ class AccountController < ApplicationController
             acc = Account.new(name:params[:name],email:params[:email],
             photo:params[:photo],phone:params[:phone],
             password_digest:params[:password],recovery:params[:rec],
-            method:params[:method], confirmed: false, member_type: 'Premium',
+            method:params[:method], confirmed: false, member_type: 'Temp',
             created_at: Time.now)
             if acc.save
                 Logg.new(account_id:acc.id,email:acc.email,mac_address:params[:mac],time:Time.now)
@@ -23,46 +23,56 @@ class AccountController < ApplicationController
 
     def login
         acc = Account.find_by(email:params[:em])
-        if params[:method] == 'App'
-            if acc && acc.password_digest == params[:ps]
-                logg = Logg.find_by(email:acc.email)
-                if logg
-                    if logg.mac_address == params[:mac]
-                        render json: {'code' => 'Success', 'message' => acc.as_json(except: [:password_digest, :recovery]), 'result' => true}
-                    else
-                        render json: {'code' => 'Error: 107', 'message' => 'Already loggedin, on another Device', 'result' => false}
-                    end
-                else
-                    Logg.new(account_id:acc.id,email:acc.email,mac_address:params[:mac],time:Time.now)
-                    render json: {'code' => 'Success', 'message' => acc.as_json(except: [:password_digest, :recovery]), 'result' => true}
+        if acc
+            if acc.member_type != 'Premium'
+                if (acc.created_at.to_date + 1.month) < Date.new && acc.member_type != 'Expired'
+                    acc.member_type = 'Expired'
+                    acc.save
                 end
-            elsif !acc
-                render json: {'code' => 'Error: 103', 'message' => 'Account does not exist', 'result' => false}
+            end
+            if params[:method] == 'App'
+                if acc && acc.password_digest == params[:ps]
+                    logg = Logg.find_by(email:acc.email)
+                    if logg
+                        if logg.mac_address == params[:mac]
+                            render json: {'code' => 'Success', 'message' => acc.as_json(except: [:password_digest, :recovery]), 'result' => true}
+                        else
+                            render json: {'code' => 'Error: 107', 'message' => 'Already loggedin, on another Device', 'result' => false}
+                        end
+                    else
+                        Logg.new(account_id:acc.id,email:acc.email,mac_address:params[:mac],time:Time.now)
+                        render json: {'code' => 'Success', 'message' => acc.as_json(except: [:password_digest, :recovery]), 'result' => true}
+                    end
+                elsif !acc
+                    render json: {'code' => 'Error: 103', 'message' => 'Account does not exist', 'result' => false}
+                else
+                    render json: {'code' => 'Error: 104', 'message' => 'Incorrect Password', 'result' => false}
+                end
             else
-                render json: {'code' => 'Error: 104', 'message' => 'Incorrect Password', 'result' => false}
+                if acc 
+                    render json: {'code' => 'Success', 'message' => acc.as_json(except: [:password_digest, :recovery]), 'result' => true}
+                else
+                    count = 0
+                    pass = ''
+                    str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%&*_+{}|:?></.,;[]\=-~'
+                    while count < 15
+                        num = rand(str.length - 1)
+                        pass += str[num]
+                        count += 1
+                    end
+                    acc = Account.new(name:params[:name],email:params[:email],
+                        photo:params[:photo],phone:params[:phone],
+                        password_digest:pass,recovery:params[:rec],
+                        method:params[:method])
+                        if acc.save
+                            render json: {'code' => 'Success', 'message' => acc.as_json(except: [:password_digest, :recovery]), 'result' => true}
+                        else
+                            render json: {'code' => 'Error: 101', 'message' => 'Database Error!', 'result' => false} 
+                        end
+                end
             end
         else
-            if acc 
-                render json: {'code' => 'Success', 'message' => acc.as_json(except: [:password_digest, :recovery]), 'result' => true}
-            else
-                count = 0
-                pass = ''
-                str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%&*_+{}|:?></.,;[]\=-~'
-                while count < 15
-                    num = rand(str.length - 1)
-                    pass += str[num]
-                    count += 1
-                end
-                acc = Account.new(name:params[:name],email:params[:email],
-                    photo:params[:photo],phone:params[:phone],
-                    password_digest:pass,recovery:params[:rec],
-                    method:params[:method])
-                    if acc.save
-                        render json: {'code' => 'Success', 'message' => acc.as_json(except: [:password_digest, :recovery]), 'result' => true}
-                    else
-                        render json: {'code' => 'Error: 101', 'message' => 'Database Error!', 'result' => false} 
-                    end
-            end
+            render json: {'code' => 'Error', 'message' => 'Account not Found!', 'result' => false}
         end
     end
 
@@ -75,6 +85,15 @@ class AccountController < ApplicationController
             render json: {'code' => 'Success', 'message' => `Goodbye #{Account.find_by(email:params[:em]).name}`, 'result' => true} 
         end
     end
+
+    def reqpass
+        acc = Account.find_by(id: params[:id])
+        if acc
+            render json: {'code' => 'Success', 'message' => acc.password_digest, 'result' => true}
+        else
+            render json: {'code' => 'Error: 120', 'message' => 'Account not found', 'result' => false}
+        end
+    end 
 
     def passupdate
         acc = Account.find_by(email: params[:email])

@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   #ACCOUNT
   post '/account/new', to: 'account#new'
   get  '/login', to: 'account#login'
+  get  '/account/:id/reqpass', to: 'account#reqpass'
   get  '/confirmation/login', to: 'account#currentUser'
   get  'recover/account', to: 'account#accountrecover'
   post '/recover/pin', to: 'account#pinrecover'
@@ -26,9 +27,17 @@ Rails.application.routes.draw do
   get '/account/:id/from/:origin/to/:destination', to: 'maps#buildRoute'
   post '/account/:id/from/:origin/to/:destination/start', to: 'maps#startRoute' #save route and boolean to check wheather route was completed or no
   
+  #FAMILIES
+  get '/account/families', to: 'family#index'
+  post '/account/new_family', to: 'family#create'
+
+
+
   #FAVORITES
   get '/account/:id/favorites', to: 'fav#index'
   post '/account/:id/favorites/new', to: 'fav#create'
 
+  #CONTACTS
+  get '/account/:id/contacts', to: 'contact#index'
 
 end

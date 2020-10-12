@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 4) do
+ActiveRecord::Schema.define(version: 6) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -23,6 +23,24 @@ ActiveRecord::Schema.define(version: 4) do
     t.boolean "confirmed", default: false
     t.string "member_type"
     t.string "created_at"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.integer "account_id"
+    t.integer "contact_id"
+    t.string "name"
+    t.string "email"
+    t.string "phone"
+  end
+
+  create_table "families", force: :cascade do |t|
+    t.integer "admin_id"
+    t.string "name"
+    t.string "code"
+    t.string "admins"
+    t.string "users"
+    t.string "created_at"
+    t.string "date"
   end
 
   create_table "favs", force: :cascade do |t|
