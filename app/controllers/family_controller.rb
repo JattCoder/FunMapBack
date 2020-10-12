@@ -9,15 +9,17 @@ class FamilyController < ApplicationController
             if g.admin_id == params[:id].to_i
                 groups << g
             else
-                g.admins.split().each do |a|
-                    if a == params[:id]
-                        groups << g
-                        added = true
-                    end
-                    if added == false
-                        g.users.split().each do |u|
-                            if u == params[:id]
-                                groups << g
+                if g.admins != ''
+                    g.admins.split().each do |a|
+                        if a == params[:id]
+                            groups << g
+                        else
+                            if g.users != ''
+                                g.users.split().each do |u|
+                                    if u == params[:id]
+                                        groups << g
+                                    end
+                                end
                             end
                         end
                     end
