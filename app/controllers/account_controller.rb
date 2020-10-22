@@ -86,6 +86,15 @@ class AccountController < ApplicationController
         end
     end
 
+    def userInfo 
+        acc = Account.find_by(id: params[:id])
+        if acc
+            render json: {'code' => 'Success', 'message' => acc.as_json(except: [:password_digest, :recovery]), 'result' => true}
+        else
+            render json: {'code' => 'Failed', 'message' => 'User does not exists', 'result' => false}
+        end
+    end
+
     def reqpass
         acc = Account.find_by(id: params[:id])
         if acc
@@ -127,6 +136,19 @@ class AccountController < ApplicationController
         else
             render json: {'code' => 'Error: 103', 'message' => 'Account does not exist', 'result' => false}
         end
+    end
+
+    def search
+        acc = Account.all
+        gather = []
+        acc.each do |a|
+            if a.email.downcase.include?(params[:search].downcase)
+                gather << a 
+            elsif a.name.downcase.include?(params[:search].downcase)
+                gather << a
+            end
+        end
+        render json: {'code' => 'Success', 'message' => gather.as_json(except: [:password_digest, :recovery]), 'result' => true}
     end
 
     def accountrecover

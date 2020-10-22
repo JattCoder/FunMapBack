@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   post '/account/passupdate', to: 'account#passupdate'
   post '/account/:id/edit', to: 'account#edit'
   post '/account/:id/delete', to: 'account#delete'
+  get '/account/:id/info', to: 'account#userInfo'
+  get '/account/search', to: 'account#search'
   #get 'logout', to: 'sessions#destroy', as: 'logout'
 
   #MAP
@@ -30,7 +32,7 @@ Rails.application.routes.draw do
   #FAMILIES
   get '/account/families', to: 'family#index'
   post '/account/new_family', to: 'family#create'
-
+  get '/account/invite', to: 'family#sendInvitation'
 
 
   #FAVORITES
