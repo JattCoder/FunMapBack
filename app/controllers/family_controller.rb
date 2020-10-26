@@ -110,7 +110,11 @@ class FamilyController < ApplicationController
                 :name => newMem ? newMem.name : 'Friend',
                 :message => 'You have been invited to '
             }).deliver_now
-            render json: {'code'=>'Success','message'=>'Email has been sent','result'=>true}
+            if newMem 
+                render json: {'code'=>'Success','message'=>newMem.as_json(except: [:password_digest, :recovery]),'result'=>true}
+            else
+                render json: {'code'=>'Success','message'=>'Not-Registered','result'=>true}
+            end
         else
             render json: {'code'=>'Error','message'=>'You must login before user search','result'=>false}
         end

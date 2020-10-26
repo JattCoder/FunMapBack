@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   #get 'logout', to: 'sessions#destroy', as: 'logout'
 
   #MAP
-  get '/account/search', to: 'maps#searchPlaces'
+  get '/account/places/search', to: 'maps#searchPlaces'
   get '/account/spot/:placeid', to: 'maps#spotInfo'
   get '/account/:id/from/:origin/to/:destination', to: 'maps#buildRoute'
   post '/account/:id/from/:origin/to/:destination/start', to: 'maps#startRoute' #save route and boolean to check wheather route was completed or no
