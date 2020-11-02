@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 6) do
+ActiveRecord::Schema.define(version: 7) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -65,6 +65,18 @@ ActiveRecord::Schema.define(version: 6) do
     t.string "email"
     t.string "mac_address"
     t.string "time"
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "drivingMode"
+    t.string "permitted"
+    t.boolean "highways"
+    t.boolean "tolls"
+    t.boolean "ferries"
+    t.string "temperature"
+    t.string "backgroundColor"
+    t.integer "familySelection"
   end
 
 end

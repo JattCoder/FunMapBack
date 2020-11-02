@@ -23,6 +23,13 @@ Rails.application.routes.draw do
   get '/account/search', to: 'account#search'
   #get 'logout', to: 'sessions#destroy', as: 'logout'
 
+  #SETTINGS
+  get '/account/:id/settings', to: 'setting#settings'
+  post '/account/:id/settings/update/locShare', to: 'setting#locShare'
+  post '/account/:id/settings/update/backColor', to: 'setting#backColor'
+  post '/account/:id/settings/update/famSelection', to: 'setting#famSelection'
+  post '/account/:id/settings/update', to: 'setting#updateSettings'
+
   #MAP
   get '/account/places/search', to: 'maps#searchPlaces'
   get '/account/spot/:placeid', to: 'maps#spotInfo'
