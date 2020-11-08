@@ -53,7 +53,7 @@ class MapsController < ApplicationController
         language = 'en'
         language = params[:language] if params[:language]
         maps = GoogleMapsService::Client.new(key: 'AIzaSyDMCLs_nBIfA8Bw9l50nSRwLOUByiDel9U')
-        matrix = maps.directions(origin, destination, mode: 'driving', language: language,)
+        matrix = maps.directions(origin, destination, mode: 'driving')
         render json: {'code' => 'Success', 'message' => matrix, 'result' => true}
     end
 
